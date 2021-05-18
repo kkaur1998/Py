@@ -1,0 +1,149 @@
+#BLL starts here
+import os
+import pickle
+import json
+class Customer:
+    cusList=[]
+    def __init__(self):
+        self.id=0
+        self.name=""
+        self.age=0
+        self.mob=0
+
+    def searchIndex(self):
+        for i in Customer.cusList:
+            if(i.id==self.id):
+                return i
+
+    def addCustomer(self):
+        Customer.cusList.append(self)
+
+    def searchCustomer(self):
+        return self.searchIndex()
+
+    def updateCustomer(self):
+        index=self.searchIndex()
+        for i in Customer.cusList:
+            if(i.id==self.id):
+                i.name=self.name
+                i.age=self.age
+                i.mob=self.mob
+
+    def deleteCustomer(self):
+        index=self.searchIndex()
+        Customer.cusList.remove(index)
+
+
+    # because json only know to read data in dictionary format so object is being converted to dict
+
+    @staticmethod
+    def ConvertoDict(obj):
+        return obj.__dict__
+
+    @staticmethod
+    def ConvertoObj(d):
+        cus=Customer()
+        cus.id=d['id']
+        cus.name=d['name']
+        cus.age=d['age']
+        cus.mob=d['mob']
+        return cus
+
+    @staticmethod
+    def SavetoJson():
+        #filesize = os.path.getsize("D:\Learning\Pojects\Python\jsondata.json")
+
+        f=open(r"D:\Learning\Pojects\Python\jsondata.json",'w')
+        json.dump(Customer.cusList,f,default=Customer.ConvertoDict)
+        f.close()
+
+    @staticmethod
+    def LoadfromJson():
+        f=f=open(r"D:\Learning\Pojects\Python\jsondata.json",'r')
+        Customer.cusList=json.load(f,object_hook=Customer.ConvertoObj)
+        f.close()
+
+    @staticmethod
+    def SavetoPickle():
+        f=open(r"D:\Learning\Pojects\Python\Pickledata.txt",'wb')
+        pickle.dump(Customer.cusList,f)
+        f.close()
+
+    @staticmethod
+    def LoadfromPickle():
+        f = open(r"D:\Learning\Pojects\Python\Pickledata.txt", 'rb')
+        Customer.cusList=pickle.load(f)
+        f.close()
+
+#BLL ends here
+
+
+
+#PL starts here
+
+def DisplayAll():
+    for i in Customer.cusList:
+        print(i.id,i.name,i.age,i.mob)
+
+
+while(1):
+    print("""
+    *******************Welcome to CMS*******************
+    * press 1 to add customer        * press 2 to search customer using id     * press 3 to update existing customer
+    * press 4 to delete customer     * press 5 to display all the customer     * press 6 to store data in json format
+    * press 7 to load data from json * press 8 to store data in pickle format  * press 9 to load data from pickle
+    * press 13 to exit
+    ****************************************************""")
+
+    choice=int(input("enter your choice"))
+    ob=Customer()
+
+    if(choice==1):
+        ob.id=input("enter customer id")
+        ob.name=input("enter name of the customer")
+        ob.age=input("enter age of customer")
+        ob.mob=input("enter mobile number")
+        ob.addCustomer()
+
+    elif(choice==2):
+        ob.id=input("enter id of customer you want to search")
+        ind=ob.searchCustomer()
+        print(f"id:{ind.id}, name: {ind.name}, age: {ind.age}, mobile_no: {ind.mob}")
+
+    elif(choice==3):
+        ob.id=input("enter id of customer you want to update")
+        ob.name=input("enter updated name of customer")
+        ob.age=input("enter updated age of customer")
+        ob.mob=input("enter updated mobile number of customer")
+        ob.updateCustomer()
+
+    elif(choice==4):
+        ob.id=input("enter id of customer you want to delete")
+        ob.deleteCustomer()
+
+    elif(choice==5):
+        DisplayAll()
+
+    elif(choice==6):
+        Customer.SavetoJson()
+        print("data saved successfully")
+
+    elif(choice==7):
+        Customer.LoadfromJson()
+        print("data loaded successfully")
+
+    elif(choice==8): #store data in pickle
+        Customer.SavetoPickle()
+        print("data saved successfully")
+
+    elif(choice==9):    #load data from pickle
+        Customer.LoadfromPickle()
+        print("data loaded successfully")
+
+    elif(choice==13):
+        break;
+
+    else:
+        print("please enter correct choice")
+    #PL ends here
+
